@@ -3,10 +3,11 @@ import './Header.css';
 
 const Header = () => {
     return (
-        <nav>
-            <Link to="/">Home</Link>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
+        <nav className="d-flex justify-content-center my-4 fw-bold">
+            <Link className="text-decoration-none" to="/">Home</Link>
+            <Link className="text-decoration-none" to="/login">Login</Link>
+            <Link className="text-decoration-none" to="/register">Register</Link>
+            <Link className="text-decoration-none" to="/register-rbs">Register RBS</Link>
         </nav>
     );
 };
