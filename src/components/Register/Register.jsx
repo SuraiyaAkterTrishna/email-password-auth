@@ -12,6 +12,7 @@ const Register = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         setSuccess('');
+        setError('');
         const email = event.target.email.value;
         const password = event.target.password.value;
 
