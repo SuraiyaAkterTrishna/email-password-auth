@@ -47,7 +47,7 @@ const Login = () => {
         })
     }
 
-    const handleResetPassword = (event) => {
+    const handleResetPassword = () => {
       const email = emailRef.current.value;
       if(!email){
         alert('Please provide your email address to reset password');

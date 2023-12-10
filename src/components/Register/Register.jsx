@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
-import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, updateProfile } from "firebase/auth";
 import app from "../../Firebase/Firebase.config";
 import { Link } from "react-router-dom";
 
@@ -16,8 +16,9 @@ const Register = () => {
     setError("");
     const email = event.target.email.value;
     const password = event.target.password.value;
+    const name = event.target.name.value;
 
-    console.log(email, password);
+    console.log(name, email, password);
 
     // validate
     if (!/(?=.*[A-Z])/.test(password)) {
@@ -39,7 +40,8 @@ const Register = () => {
         setError("");
         event.target.reset();
         setSuccess("User has been created successfully");
-        sendVerificationEmail(result.user);
+        // sendVerificationEmail(result.user);
+        updateUserData(result.user, name);
       })
       .catch((error) => {
         console.error(error.message);
@@ -47,11 +49,24 @@ const Register = () => {
       });
   };
 
-  const sendVerificationEmail = (user) => {
+  // email verification
+  /* const sendVerificationEmail = (user) => {
     sendEmailVerification(user)
     .then(result => {
         console.log(result);
         alert('Please verify your email address');
+    })
+  } */
+
+  const updateUserData = (user, name) => {
+    updateProfile(user, {
+      displayName: name
+    })
+    .then(() => {
+      console.log("user name updated")
+    })
+    .catch(error => {
+      setError(error.message);
     })
   }
 
@@ -66,6 +81,15 @@ const Register = () => {
     <div className="w-50 mx-auto">
       <h2 className="text-primary">Please Register!!!</h2>
       <form onSubmit={handleSubmit}>
+        <input
+          className="w-50 mb-4 p-1"
+          type="text"
+          name="name"
+          id="name"
+          placeholder="Your Name"
+          required
+        />
+        <br />
         <input
           className="w-50 mb-4 p-1"
           onChange={handleEmailChange}
