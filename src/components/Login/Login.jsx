@@ -1,10 +1,16 @@
 /* eslint-disable react/no-unknown-property */
 
-import { useState } from "react";
+import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
+import { useRef, useState } from "react";
+import app from "../../Firebase/Firebase.config";
+import { Link } from "react-router-dom";
+
+const auth = getAuth(app);
 
 const Login = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const emailRef = useRef();
 
     const handleLogin = (event) => {
         event.preventDefault();
@@ -28,6 +34,33 @@ const Login = () => {
           setError('Please add at least 6 characters in your password');
           return;
         }
+
+        signInWithEmailAndPassword(auth, email, password)
+        .then(result => {
+          const loggedUser = result.user;
+          console.log(loggedUser)
+          setSuccess('User login successful');
+          setError('');
+        })
+        .catch(error => {
+          setError(error.message);
+        })
+    }
+
+    const handleResetPassword = (event) => {
+      const email = emailRef.current.value;
+      if(!email){
+        alert('Please provide your email address to reset password');
+        return; 
+      }
+      sendPasswordResetEmail(auth, email)
+      .then( () => {
+        alert('Please check your email');
+      })
+      .catch(error => {
+        console.log(error);
+        setError(error.message);
+      })
     }
     
   return (
@@ -38,13 +71,14 @@ const Login = () => {
             type="email"
             className="form-control"
             name="email"
+            ref={emailRef}
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
             placeholder="Enter email"
             required
           />
         </div>
-        <div className="form-group mb-2">
+        <div className="form-group mb-4">
           <input
             type="password"
             className="form-control"
@@ -54,20 +88,12 @@ const Login = () => {
             required
           />
         </div>
-        <div className="form-group form-check">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id="exampleCheck1"
-          />
-          <label className="form-check-label" for="exampleCheck1">
-            Check me out
-          </label>
-        </div>
         <button type="submit" className="btn btn-primary">
           Submit
         </button>
       </form>
+      <p><small>Forget Password? Please <button onClick={handleResetPassword} className="btn btn-link">Reset Password</button></small></p>
+      <p><small>New to this website? Please <Link to="/register">Register</Link></small></p>
       <p className="text-danger">{error}</p>
       <p className="text-success">{success}</p>
     </div>
